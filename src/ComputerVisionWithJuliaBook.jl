@@ -1,17 +1,12 @@
-__precompile__()
 module ComputerVisionWithJuliaBook
 
-using Gtk, Images, ImageView, TestImages
-
-function drawToCanvas()
-  imshow!(canvas,processedImage)
-end
+using Gtk, Images, ImageView, TestImages, FileIO
 
 function open_file(w)
   @async println("Open file handler widget is: ", w)
-  global current_image_file_path = open_dialog("Choose image file")
+  path = open_dialog("Choose image file")
   @async println("Choosen file is: ", current_image_file_path)
-  processedImage = load(current_image_file_path)
+  processedImage = FileIO.load(path)
   imshow!(canvas,processedImage)
 end
 
@@ -19,7 +14,7 @@ function save_file(w)
   @async println("Save file handler widget is: ", w)
   path = save_dialog("Choose image file")
   @async println("Choosen file is: ", path)
-  save(path, processedImage)
+  FileIO.save(path, processedImage)
 end
 
 function initUI()
