@@ -1,0 +1,7 @@
+name = "ComputerVisionWithJuliaBook"
+uuid = "75e5f744-973d-41ea-b7f5-b3db7449fe83"
+authors = ["Emil Tomov <bemcho@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+Gtk = "4c0ca9eb-093a-5379-98c5-f87ac0bbbf44"
