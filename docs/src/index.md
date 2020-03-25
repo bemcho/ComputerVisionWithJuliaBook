@@ -1,7 +1,7 @@
-# Example
+# ComputerVisionWithJuliaBook
 
-Example Julia package repo.
+ComputerVisionWithJuliaBook docs
 
 ```@autodocs
-Modules = [Example]
+Modules = [ComputerVisionWithJuliaBook]
 ```
