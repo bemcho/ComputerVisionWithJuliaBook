@@ -22,8 +22,10 @@ function initUI()
     filename = joinpath(@__DIR__, "../resource/gtk", "ComputerVisionWithJuliaBook.glade"),
   )
 
-  global winDraw = builder["main_window_draw"]
-  mainGrid = builder["main_grid"]
+  winDraw = builder["main_window_draw"]
+  winToolbar = builder["main_window_toolbar"]
+
+  mainGrid = builder["main_draw_canvas_container"]
   global  drawAreaFrame,canvas = ImageView.frame_canvas(:auto)
   push!(mainGrid, drawAreaFrame)
   global processedImage = testimage("lighthouse")
@@ -36,7 +38,7 @@ function initUI()
   signal_connect(open_file, openFileBtn, "clicked", true)
   signal_connect(save_file, saveFileBtn, "clicked", true)
 
-  showall(winDraw)
+  showall.([winDraw,winToolbar])
 
   if !isinteractive()
     c = Condition()

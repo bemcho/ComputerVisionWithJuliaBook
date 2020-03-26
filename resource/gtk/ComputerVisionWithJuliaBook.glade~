@@ -11,153 +11,150 @@
     <property name="default_width">800</property>
     <property name="default_height">800</property>
     <property name="icon_name">applications-accessories</property>
-    <property name="gravity">south-east</property>
+    <property name="gravity">center</property>
     <child>
       <placeholder/>
     </child>
     <child>
-      <object class="GtkGrid" id="main_grid">
+      <object class="GtkBox" id="main_draw_canvas_container">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">baseline</property>
-        <property name="valign">baseline</property>
+        <property name="margin_left">1</property>
+        <property name="margin_right">1</property>
+        <property name="margin_top">1</property>
+        <property name="margin_bottom">1</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">1</property>
         <child>
-          <object class="GtkFrame" id="tools_frame">
-            <property name="name">Tools</property>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="main_window_toolbar">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="has_focus">True</property>
+    <property name="has_default">True</property>
+    <property name="receives_default">True</property>
+    <property name="title" translatable="yes">Tools</property>
+    <property name="resizable">False</property>
+    <property name="default_width">50</property>
+    <property name="default_height">800</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">menu</property>
+    <property name="skip_taskbar_hint">True</property>
+    <property name="urgency_hint">True</property>
+    <property name="deletable">False</property>
+    <property name="gravity">north</property>
+    <property name="transient_for">main_window_draw</property>
+    <property name="attached_to">main_window_draw</property>
+    <property name="has_resize_grip">True</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkBox" id="main_toolbar_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="halign">center</property>
+        <property name="valign">start</property>
+        <property name="margin_left">3</property>
+        <property name="margin_right">3</property>
+        <property name="margin_top">3</property>
+        <property name="margin_bottom">3</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">3</property>
+        <property name="homogeneous">True</property>
+        <property name="baseline_position">top</property>
+        <child>
+          <object class="GtkButton" id="open_image_btn">
+            <property name="label">gtk-open</property>
+            <property name="name">open_image_btn</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">5</property>
-            <property name="margin_bottom">1</property>
-            <property name="label_xalign">0</property>
-            <property name="label_yalign">1</property>
-            <child>
-              <object class="GtkAlignment">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">baseline</property>
-                <property name="valign">start</property>
-                <property name="margin_bottom">6</property>
-                <property name="left_padding">12</property>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_top">5</property>
-                    <child>
-                      <object class="GtkButton" id="open_image_btn">
-                        <property name="label">gtk-open</property>
-                        <property name="name">open_image_btn</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="can_default">True</property>
-                        <property name="has_default">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                        <property name="image_position">top</property>
-                        <property name="always_show_image">True</property>
-                        <child internal-child="accessible">
-                          <object class="AtkObject" id="open_image_btn-atkobject">
-                            <property name="AtkObject::accessible-role" translatable="yes">file-chooser</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="save_image_btn">
-                        <property name="label">gtk-save-as</property>
-                        <property name="name">save_image_btn</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="can_default">True</property>
-                        <property name="has_default">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                        <property name="image_position">top</property>
-                        <property name="always_show_image">True</property>
-                        <child internal-child="accessible">
-                          <object class="AtkObject" id="save_image_btn-atkobject">
-                            <property name="AtkObject::accessible-role" translatable="yes">file-chooser</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child type="label">
-              <object class="GtkLabel" id="frame_label">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">6</property>
-                <property name="margin_bottom">5</property>
-                <property name="label" translatable="yes">Tools</property>
-                <property name="use_underline">True</property>
-                <property name="justify">center</property>
-                <attributes>
-                  <attribute name="font-desc" value="Ubuntu Mono Bold 16"/>
-                  <attribute name="foreground" value="#4e4e9a9a0606"/>
-                </attributes>
+            <property name="can_focus">True</property>
+            <property name="can_default">True</property>
+            <property name="has_default">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_underline">True</property>
+            <property name="use_stock">True</property>
+            <property name="image_position">top</property>
+            <property name="always_show_image">True</property>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="open_image_btn-atkobject">
+                <property name="AtkObject::accessible-role" translatable="yes">file-chooser</property>
               </object>
             </child>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkFrame" id="drawing_area_frame">
+          <object class="GtkButton" id="save_image_btn">
+            <property name="label">gtk-save-as</property>
+            <property name="name">save_image_btn</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="margin_left">5</property>
-            <property name="margin_right">5</property>
-            <property name="margin_top">5</property>
-            <property name="margin_bottom">5</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
-            <property name="label_xalign">0</property>
-            <child>
-              <object class="GtkAlignment">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="left_padding">12</property>
-                <child>
-                  <placeholder/>
-                </child>
+            <property name="can_focus">True</property>
+            <property name="can_default">True</property>
+            <property name="has_default">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_underline">True</property>
+            <property name="use_stock">True</property>
+            <property name="image_position">top</property>
+            <property name="always_show_image">True</property>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="save_image_btn-atkobject">
+                <property name="AtkObject::accessible-role" translatable="yes">file-chooser</property>
               </object>
-            </child>
-            <child type="label_item">
-              <placeholder/>
             </child>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>
