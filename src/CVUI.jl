@@ -16,16 +16,16 @@ function initUI()
     )
 
     # windows and dialogs
-    winDraw = builder["main_window_draw"]
-    winToolbar = builder["main_window_toolbar"]
+    global winDraw = builder["main_window_draw"]
+    global winToolbar = builder["main_window_toolbar"]
     global winEditDimensions = builder["edit_dimensions_window"]
     connect_widget(w -> visible(winEditDimensions, false), winDraw, "focus-in-event")
     connect_widget(w -> visible(winEditDimensions, false), winToolbar, "focus-in-event")
 
     # image drawing
-    mainGrid = builder["main_draw_canvas_container"]
-    global drawAreaFrame, canvas = ImageView.frame_canvas(:auto)
-    push!(mainGrid, drawAreaFrame)
+    global mainGrid = builder["main_draw_canvas_container"]
+    # drawAreaFrame, canvas = ImageView.frame_canvas(:auto)
+    # push!(mainGrid, drawAreaFrame)
     global processedImage = CVProcessing.defaultimage()
     global currentHeight, currentWidth = size(processedImage)
     global currentScale = 100.0
@@ -44,8 +44,7 @@ function initUI()
     connect_widget(heightset, builder["slider_height_adjustment"], "value-changed")
     connect_widget(scaleset, builder["slider_scale_adjustment"], "value-changed")
 
-    imshow!(canvas, processedImage)
-    showall.([winDraw, winToolbar])
+    redrawImage(processedImage)
 
     if !isinteractive()
         c = Condition()
@@ -58,10 +57,18 @@ end
 
 connect_widget(handler, w, event, after = true) = signal_connect(handler, w, event, after)
 
+function redrawImage(img)
+    drawAreaFrame, canvas = ImageView.frame_canvas(:auto)
+    empty!(mainGrid)
+    push!(mainGrid, drawAreaFrame)
+    imshow!(canvas, img)
+    showall.([winDraw, winToolbar])
+end
+
 function open_file(w)
     path = open_dialog("Open image file", GtkNullContainer(), image_filters)
     processedImage = CVProcessing.open_file(path)
-    imshow!(canvas, processedImage)
+    redrawImage(processedImage)
 end
 
 function save_file(w)
@@ -77,14 +84,14 @@ function widthset(widget)
     currentWidth = Gtk.GAccessor.value(widget)
 
     processedImage = CVProcessing.resize_image(processedImage, currentWidth, currentHeight)
-    imshow!(canvas, processedImage)
+    redrawImage(processedImage)
 end
 
 function heightset(widget)
     currentHeight = Gtk.GAccessor.value(widget)
 
     processedImage = CVProcessing.resize_image(processedImage, currentWidth, currentHeight)
-    imshow!(canvas, processedImage)
+    redrawImage(processedImage)
 end
 
 function crop_image(w)
