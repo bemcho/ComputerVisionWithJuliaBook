@@ -277,19 +277,20 @@
   </object>
   <object class="GtkWindow" id="edit_dimensions_window">
     <property name="can_focus">True</property>
+    <property name="has_focus">True</property>
     <property name="can_default">True</property>
     <property name="has_default">True</property>
     <property name="receives_default">True</property>
     <property name="title" translatable="yes">Change Width,Height Scale</property>
     <property name="resizable">False</property>
-    <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="default_width">400</property>
     <property name="default_height">200</property>
     <property name="destroy_with_parent">True</property>
-    <property name="type_hint">dialog</property>
+    <property name="type_hint">toolbar</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="urgency_hint">True</property>
+    <property name="gravity">east</property>
     <property name="transient_for">main_window_toolbar</property>
     <property name="attached_to">image_dimensions__frame</property>
     <property name="has_resize_grip">True</property>
