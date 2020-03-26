@@ -19,6 +19,7 @@ end
 
 function resize_image(w)
     println("Resize image called")
+    show(winEditDimensions)
 end
 
 function crop_image(w)
@@ -38,9 +39,12 @@ function initUI()
         ),
     )
 
+    # windows and dialogs
     winDraw = builder["main_window_draw"]
     winToolbar = builder["main_window_toolbar"]
+    global winEditDimensions = builder["edit_dimensions_window"]
 
+    # image drawing
     mainGrid = builder["main_draw_canvas_container"]
     global drawAreaFrame, canvas = ImageView.frame_canvas(:auto)
     push!(mainGrid, drawAreaFrame)
