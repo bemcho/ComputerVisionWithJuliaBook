@@ -16,9 +16,22 @@ resize_image(img, w, h) = imresize(img, (convert(Int, h), convert(Int, w)))
 
 function scale_image(img, w, h, scale)
     height, width = size(img)
-    scale_percentage_w = w / width + scale
-    scale_percentage_h = h / height + scale
+    scale_percentage_w = round(w / width + scale, digits = 2)
+    scale_percentage_h = round(h / height + scale, digits = 2)
+    @async println(
+        "w: ",
+        w,
+        " h: ",
+        h,
+        " scale: ",
+        scale,
+        " spw: ",
+        scale_percentage_w,
+        " sph: ",
+        scale_percentage_h,
+    )
     new_size = trunc.(Int, (width * scale_percentage_w, height * scale_percentage_h))
+    @async println(new_size)
     resized_image = imresize(img, new_size)
 end
 end
