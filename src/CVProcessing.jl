@@ -30,8 +30,8 @@ function scale_image(img, w, h, scale)
         " sph: ",
         scale_percentage_h,
     )
-    new_size = trunc.(Int, (width * scale_percentage_w, height * scale_percentage_h))
-    @async println(new_size)
+    new_size = trunc.(Int, (height * scale_percentage_h, width * scale_percentage_w))
+    @async println(reverse(new_size))
     resized_image = imresize(img, new_size)
 end
 end
