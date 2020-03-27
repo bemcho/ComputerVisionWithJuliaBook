@@ -35,8 +35,6 @@ function initUI()
     global scaleSlider = builder["slider_scale_adjustment"]
 
     #  signals handling
-    # connect_widget(w -> hide(winEditDimensions), winDraw, "activate-focus")
-    # connect_widget(w -> hide(winEditDimensions), winToolbar, "activate-focus")
 
     # open/save
     connect_widget(open_file, builder["open_image_btn"], "clicked", true)
@@ -52,16 +50,20 @@ function initUI()
     connect_widget(heightset, builder["slider_height_adjustment"], "value-changed")
 
     # resize ok, cancel
+    connect_widget(preview_resize, builder["resize_window_preview_btn"], "clicked")
     connect_widget(apply_resize, builder["resize_window_apply_btn"], "clicked")
-    connect_widget(close_resize, builder["resize_window_close_btn"], "clicked")
+    connect_widget(cancel_resize, builder["resize_window_cancel_btn"], "clicked")
 
     # crop ok, cancel
+    connect_widget(preview_crop, builder["crop_window_preview_btn"], "clicked")
     connect_widget(apply_crop, builder["crop_window_apply_btn"], "clicked")
-    connect_widget(close_crop, builder["crop_window_close_btn"], "clicked")
+    connect_widget(cancel_crop, builder["crop_window_cancel_btn"], "clicked")
 
     # scale ok, cancel
+    connect_widget(preview_scale, builder["scale_window_preview_btn"], "clicked")
     connect_widget(apply_scale, builder["scale_window_apply_btn"], "clicked")
-    connect_widget(close_scale, builder["scale_window_close_btn"], "clicked")
+    connect_widget(cancel_scale, builder["scale_window_cancel_btn"], "clicked")
+
     connect_widget(scaleset, builder["slider_scale_adjustment"], "value-changed")
 
     global originalImage = CVProcessing.defaultimage()
@@ -130,57 +132,75 @@ function resize_image(w)
     show(winEditResize)
 end
 
-function widthset(widget)
-    global currentWidth = Gtk.GAccessor.value(widget)
-end
+widthset(widget) = global currentWidth = Gtk.GAccessor.value(widget)
 
-function apply_resize(widget)
+preview_resize(widget) =
     redrawImage(CVProcessing.resize_image(processedImage, currentWidth, currentHeight))
 
-end
-
-function close_resize(widget)
+function apply_resize(widget)
     hide(winEditResize)
     global processedImage =
         CVProcessing.resize_image(processedImage, currentWidth, currentHeight)
     redrawImage(processedImage)
 end
 
-function heightset(widget)
-    global currentHeight = Gtk.GAccessor.value(widget)
+heightset(widget) = global currentHeight = Gtk.GAccessor.value(widget)
+
+function cancel_resize(widget)
+    hide(winEditResize)
+    redrawImage(processedImage)
 end
 
 function crop_image(w)
     show(winEditCrop)
 end
 
-function apply_crop(widget)
+function preview_crop(widget)
     redrawImage(CVProcessing.resize_image(processedImage, currentWidth, currentHeight))
 end
 
-function close_crop(widget)
+function apply_crop(widget)
     hide(winEditCrop)
     global processedImage =
         CVProcessing.resize_image(processedImage, currentWidth, currentHeight)
     redrawImage(processedImage)
 end
 
-function scale_image(w)
-    show(winEditScale)
-end
-
-function apply_scale(widget)
-    redrawImage(CVProcessing.resize_image(processedImage, currentWidth, currentHeight))
-end
-
-function close_scale(widget)
-    hide(winEditScale)
-    global processedImage =
-        CVProcessing.resize_image(processedImage, currentWidth, currentHeight)
+function cancel_crop(widget)
+    hide(winEditCrop)
     redrawImage(processedImage)
 end
 
-function scaleset(widget)
-    println(Gtk.GAccessor.value(widget))
+function scale_image(w)
+    global currentScale = 0
+    set_value!(widthSlider, convert(Float64, currentWidth))
+    set_value!(heightSlider, convert(Float64, currentHeight))
+    set_value!(scaleSlider, convert(Float64, currentScale))
+    show(winEditScale)
 end
+
+preview_scale(widget) = redrawImage(CVProcessing.scale_image(
+    processedImage,
+    currentWidth,
+    currentHeight,
+    currentScale == 0 ? 0 : currentScale / 100,
+))
+
+function apply_scale(widget)
+    hide(winEditScale)
+    global processedImage = CVProcessing.scale_image(
+        processedImage,
+        currentWidth,
+        currentHeight,
+        currentScale == 0 ? 0 : currentScale / 100,
+    )
+    redrawImage(processedImage)
+end
+
+function cancel_scale(widget)
+    hide(winEditScale)
+    redrawImage(processedImage)
+end
+
+scaleset(widget) = global currentScale = Gtk.GAccessor.value(widget)
 end
