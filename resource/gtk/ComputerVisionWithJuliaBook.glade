@@ -9,30 +9,14 @@
     <property name="has_default">True</property>
     <property name="receives_default">True</property>
     <property name="title" translatable="yes">ComputerVisionWithJuliaBook</property>
-    <property name="default_width">800</property>
-    <property name="default_height">800</property>
+    <property name="resizable">False</property>
     <property name="icon_name">applications-accessories</property>
     <property name="gravity">center</property>
     <child>
       <placeholder/>
     </child>
     <child>
-      <object class="GtkBox" id="main_draw_canvas_container">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="can_default">True</property>
-        <property name="has_default">True</property>
-        <property name="receives_default">True</property>
-        <property name="margin_left">1</property>
-        <property name="margin_right">1</property>
-        <property name="margin_top">1</property>
-        <property name="margin_bottom">1</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">1</property>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
+      <placeholder/>
     </child>
   </object>
   <object class="GtkWindow" id="main_window_toolbar">

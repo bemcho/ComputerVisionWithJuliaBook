@@ -1,10 +1,11 @@
 module CVUI
-export initUI
-const image_filters = ("*.png", "*.jpg", "*.gif", "*.tiff")
-
 include("CVProcessing.jl")
+using Gtk, GtkReactive, ImageView, .CVProcessing
 
-using Gtk, ImageView, .CVProcessing
+export initUI
+
+const image_filters = ("*.png", "*.jpg", "*.gif", "*.tiff")
+# image drawing
 
 function initUI()
     builder = GtkBuilder(
@@ -17,18 +18,12 @@ function initUI()
 
     # windows and dialogs
     global winDraw = builder["main_window_draw"]
-    global winToolbar = builder["main_window_toolbar"]
+    winToolbar = builder["main_window_toolbar"]
     global winEditDimensions = builder["edit_dimensions_window"]
-    connect_widget(w -> visible(winEditDimensions, false), winDraw, "focus-in-event")
-    connect_widget(w -> visible(winEditDimensions, false), winToolbar, "focus-in-event")
 
-    # image drawing
-    global mainGrid = builder["main_draw_canvas_container"]
-    # drawAreaFrame, canvas = ImageView.frame_canvas(:auto)
-    # push!(mainGrid, drawAreaFrame)
-    global processedImage = CVProcessing.defaultimage()
-    global currentHeight, currentWidth = size(processedImage)
-    global currentScale = 100.0
+    #  signals handling
+    connect_widget(w -> hide(winEditDimensions), winDraw, "activate-focus")
+    connect_widget(w -> hide(winEditDimensions), winToolbar, "activate-focus")
 
     # open/save
     connect_widget(open_file, builder["open_image_btn"], "clicked", true)
@@ -44,7 +39,9 @@ function initUI()
     connect_widget(heightset, builder["slider_height_adjustment"], "value-changed")
     connect_widget(scaleset, builder["slider_scale_adjustment"], "value-changed")
 
-    redrawImage(processedImage)
+    redrawImage(CVProcessing.defaultimage())
+
+    showall.([winDraw, winToolbar])
 
     if !isinteractive()
         c = Condition()
@@ -56,19 +53,31 @@ function initUI()
 end
 
 connect_widget(handler, w, event, after = true) = signal_connect(handler, w, event, after)
+set_size!(w::Gtk.GtkWidget, width::Int, height::Int) = ccall(
+    (:gtk_widget_set_size_request, Gtk.libgtk),
+    Nothing,
+    (Ptr{GObject}, Cint, Cint),
+    w,
+    width,
+    height,
+)
 
 function redrawImage(img)
-    drawAreaFrame, canvas = ImageView.frame_canvas(:auto)
-    empty!(mainGrid)
-    push!(mainGrid, drawAreaFrame)
+    global processedImage = img
+    global currentHeight, currentWidth = size(processedImage)
+
+    drawAreaFrame, canvas = ImageView.frame_canvas(:none)
+    set_size!(winDraw, currentWidth, currentHeight)
+
+    empty!(winDraw)
+    push!(winDraw, drawAreaFrame)
     imshow!(canvas, img)
-    showall.([winDraw, winToolbar])
+    showall(winDraw)
 end
 
 function open_file(w)
     path = open_dialog("Open image file", GtkNullContainer(), image_filters)
-    processedImage = CVProcessing.open_file(path)
-    redrawImage(processedImage)
+    redrawImage(CVProcessing.open_file(path))
 end
 
 function save_file(w)
@@ -81,17 +90,19 @@ function resize_image(w)
 end
 
 function widthset(widget)
-    currentWidth = Gtk.GAccessor.value(widget)
-
-    processedImage = CVProcessing.resize_image(processedImage, currentWidth, currentHeight)
-    redrawImage(processedImage)
+    redrawImage(CVProcessing.resize_image(
+        processedImage,
+        Gtk.GAccessor.value(widget),
+        currentHeight,
+    ))
 end
 
 function heightset(widget)
-    currentHeight = Gtk.GAccessor.value(widget)
-
-    processedImage = CVProcessing.resize_image(processedImage, currentWidth, currentHeight)
-    redrawImage(processedImage)
+    redrawImage(CVProcessing.resize_image(
+        processedImage,
+        currentWidth,
+        Gtk.GAccessor.value(widget),
+    ))
 end
 
 function crop_image(w)
