@@ -1,4 +1,9 @@
 ComputerVisionWithJuliaBook package repo.
+``` run
+   cd  ComputerVisionWithJuliaBook
+   julia src/ComputerVisionWithJuliaBook.jl
+```
+
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://bemcho.github.io/ComputerVisionWithJuliaBook/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://bemcho.github.io/ComputerVisionWithJuliaBook/dev)

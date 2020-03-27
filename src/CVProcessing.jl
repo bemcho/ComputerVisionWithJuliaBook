@@ -12,8 +12,7 @@ testimage(name) = TestImages.testimage(name)
 
 defaultimage() = FileIO.load(joinpath(@__DIR__, "../resource/img", "lighthouse.png"))
 
-function resize_image(img, w, h)
-    println("CVProcessing.Resize image called")
-    return imresize(img, (convert(Int, h), convert(Int, w)))
+function resize_image(img, w, h)  
+    imresize(img, (convert(Int, h), convert(Int, w))) 
 end
 end
