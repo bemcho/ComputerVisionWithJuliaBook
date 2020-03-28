@@ -1,6 +1,6 @@
 module CVProcessing
 
-export open_file, save_file, testimage, defaultimage, resize_image, scale_image
+export open_file, save_file, testimage, defaultimage, resize_image, scale_image, crop_image
 
 using Images, ImageView, TestImages, ImageTransformations, FileIO
 
@@ -16,22 +16,19 @@ resize_image(img, w, h) = imresize(img, (convert(Int, h), convert(Int, w)))
 
 function scale_image(img, w, h, scale)
     height, width = size(img)
-    scale_percentage_w = round(w / width + scale, digits = 2)
-    scale_percentage_h = round(h / height + scale, digits = 2)
-    @async println(
-        "w: ",
-        w,
-        " h: ",
-        h,
-        " scale: ",
-        scale,
-        " spw: ",
-        scale_percentage_w,
-        " sph: ",
-        scale_percentage_h,
-    )
+
+    scale_percentage_h = round(convert(Int, h) / height + scale, digits = 2)
+    scale_percentage_w = round(convert(Int, w) / width + scale, digits = 2)
+
     new_size = trunc.(Int, (height * scale_percentage_h, width * scale_percentage_w))
-    @async println(reverse(new_size))
-    resized_image = imresize(img, new_size)
+    imresize(img, new_size)
 end
+
+function crop_image(img, topLeftX, topLeftY, bottomRightX, bottomRightY)
+    img[
+        convert(Int, topLeftY):convert(Int, bottomRightY),
+        convert(Int, topLeftX):convert(Int, bottomRightX),
+    ]
+end
+
 end

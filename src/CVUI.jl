@@ -34,6 +34,12 @@ function initUI()
     global heightSlider = builder["slider_height_adjustment"]
     global scaleSlider = builder["slider_scale_adjustment"]
 
+    # crop sliders
+    global topLeftXSlider = builder["crop_top_left_x"]
+    global topLeftYSlider = builder["crop_top_left_y"]
+
+    global bottomRightXSlider = builder["crop_bottom_right_x"]
+    global bottomRightYSlider = builder["crop_bottom_right_y"]
     #  signals handling
 
     # open/save
@@ -99,6 +105,25 @@ set_value!(w::Gtk.GObject, value::Float64) = (@sigatom ccall(
     w,
     value,
 ))
+
+set_upper_value!(w::Gtk.GObject, value::Float64) = (@sigatom ccall(
+    (:gtk_adjustment_set_upper, Gtk.libgtk),
+    Nothing,
+    (Ptr{GObject}, Cdouble),
+    w,
+    value,
+))
+
+set_lower_value!(w::Gtk.GObject, value::Float64) = (@sigatom ccall(
+    (:gtk_adjustment_set_lower, Gtk.libgtk),
+    Nothing,
+    (Ptr{GObject}, Cdouble),
+    w,
+    value,
+))
+
+get_value(w::Gtk.GObject) =
+    Float64(ccall((:gtk_adjustment_get_value, Gtk.libgtk), Cdouble, (Ptr{GObject},), w))
 
 set_sensitive!(w::Gtk.GtkWidget, state::Bool) = (@sigatom ccall(
     (:gtk_widget_set_sensitive, Gtk.libgtk),
@@ -171,23 +196,45 @@ function cancel_resize(w)
 end
 
 function crop_image(w)
+    set_value!(topLeftXSlider, 1.0)
+    set_upper_value!(topLeftXSlider, currentWidth / 2.0)
+
+    set_value!(topLeftYSlider, 1.0)
+    set_upper_value!(topLeftYSlider, currentHeight / 2.0)
+
+   
+    set_lower_value!(bottomRightXSlider, currentWidth / 2.0)
+    set_upper_value!(bottomRightXSlider, convert(Float64, currentWidth))
+    set_value!(bottomRightXSlider, convert(Float64, currentWidth))
+
+    set_lower_value!(bottomRightYSlider, currentHeight / 2.0)
+    set_upper_value!(bottomRightYSlider, convert(Float64, currentHeight))
+    set_value!(bottomRightYSlider, convert(Float64, currentHeight))
+
     show(winEditCrop)
 end
 
 function preview_crop(w)
     disable(w)
-    @sync redrawImage(CVProcessing.resize_image(
+    @sync redrawImage(CVProcessing.crop_image(
         processedImage,
-        currentWidth,
-        currentHeight,
+        Gtk.GAccessor.value(topLeftXSlider),
+        Gtk.GAccessor.value(topLeftYSlider),
+        Gtk.GAccessor.value(bottomRightXSlider),
+        Gtk.GAccessor.value(bottomRightYSlider),
     ))
     enable(w)
 end
 
 function apply_crop(w)
     hide(winEditCrop)
-    global processedImage =
-        CVProcessing.resize_image(processedImage, currentWidth, currentHeight)
+    global processedImage = CVProcessing.crop_image(
+        processedImage,
+        Gtk.GAccessor.value(topLeftXSlider),
+        Gtk.GAccessor.value(topLeftYSlider),
+        Gtk.GAccessor.value(bottomRightXSlider),
+        Gtk.GAccessor.value(bottomRightYSlider),
+    )
     redrawImage(processedImage)
 end
 
@@ -213,7 +260,7 @@ function preview_scale(w)
         currentHeight,
         currentScale == 0 ? 0 : currentScale / 100,
     ))
-    
+
     enable(w)
 end
 
@@ -233,5 +280,5 @@ function cancel_scale(widget)
     redrawImage(processedImage)
 end
 
-scaleset(widget) = global currentScale = Gtk.GAccessor.value(widget)
+scaleset(widget) = global currentScale = convert(Int,Gtk.GAccessor.value(widget))
 end
