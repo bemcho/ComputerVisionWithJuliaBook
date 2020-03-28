@@ -150,16 +150,15 @@ function redrawImage(img)
 end
 
 function open_file(w)
-    path = open_dialog("Open image file", GtkNullContainer(), image_filters)
+    @sync path = open_dialog("Open image file", GtkNullContainer(), image_filters)
     global originalImage = CVProcessing.open_file(path)
     global processedImage = copy(originalImage)
-    redrawImage(originalImage)
+    @sync redrawImage(originalImage)
 end
 
 function save_file(w)
     path = save_dialog("Save image file", GtkNullContainer(), image_filters)
-    CVProcessing.save_file(path, processedImage)
-
+    @sync CVProcessing.save_file(path, processedImage)
 end
 
 function resize_image(w)
@@ -183,7 +182,7 @@ end
 
 function apply_resize(widget)
     hide(winEditResize)
-    global processedImage =
+    @sync global processedImage =
         CVProcessing.resize_image(processedImage, currentWidth, currentHeight)
     redrawImage(processedImage)
 end
@@ -202,7 +201,7 @@ function crop_image(w)
     set_value!(topLeftYSlider, 1.0)
     set_upper_value!(topLeftYSlider, currentHeight / 2.0)
 
-   
+
     set_lower_value!(bottomRightXSlider, currentWidth / 2.0)
     set_upper_value!(bottomRightXSlider, convert(Float64, currentWidth))
     set_value!(bottomRightXSlider, convert(Float64, currentWidth))
@@ -228,19 +227,19 @@ end
 
 function apply_crop(w)
     hide(winEditCrop)
-    global processedImage = CVProcessing.crop_image(
+    @sync global processedImage = CVProcessing.crop_image(
         processedImage,
         Gtk.GAccessor.value(topLeftXSlider),
         Gtk.GAccessor.value(topLeftYSlider),
         Gtk.GAccessor.value(bottomRightXSlider),
         Gtk.GAccessor.value(bottomRightYSlider),
     )
-    redrawImage(processedImage)
+    @sync redrawImage(processedImage)
 end
 
 function cancel_crop(widget)
     hide(winEditCrop)
-    redrawImage(processedImage)
+    @sync redrawImage(processedImage)
 end
 
 function scale_image(w)
@@ -266,19 +265,19 @@ end
 
 function apply_scale(widget)
     hide(winEditScale)
-    global processedImage = CVProcessing.scale_image(
+    @sync global processedImage = CVProcessing.scale_image(
         processedImage,
         currentWidth,
         currentHeight,
         currentScale == 0 ? 0 : currentScale / 100,
     )
-    redrawImage(processedImage)
+    @sync redrawImage(processedImage)
 end
 
 function cancel_scale(widget)
     hide(winEditScale)
-    redrawImage(processedImage)
+    @sync redrawImage(processedImage)
 end
 
-scaleset(widget) = global currentScale = convert(Int,Gtk.GAccessor.value(widget))
+scaleset(widget) = global currentScale = convert(Int, Gtk.GAccessor.value(widget))
 end
