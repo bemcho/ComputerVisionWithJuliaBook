@@ -100,6 +100,18 @@ set_value!(w::Gtk.GObject, value::Float64) = (@sigatom ccall(
     value,
 ))
 
+set_sensitive!(w::Gtk.GtkWidget, state::Bool) = (@sigatom ccall(
+    (:gtk_widget_set_sensitive, Gtk.libgtk),
+    Nothing,
+    (Ptr{GObject}, Cint),
+    w,
+    state,
+))
+
+enable(w) = @sync set_sensitive!(w, true)
+
+disable(w) = @sync set_sensitive!(w, false)
+
 function redrawImage(img)
     global currentHeight, currentWidth = size(img)
 
@@ -134,8 +146,15 @@ end
 
 widthset(widget) = global currentWidth = Gtk.GAccessor.value(widget)
 
-preview_resize(widget) =
-    redrawImage(CVProcessing.resize_image(processedImage, currentWidth, currentHeight))
+function preview_resize(w)
+    disable(w)
+    @sync redrawImage(CVProcessing.resize_image(
+        processedImage,
+        currentWidth,
+        currentHeight,
+    ))
+    enable(w)
+end
 
 function apply_resize(widget)
     hide(winEditResize)
@@ -146,7 +165,7 @@ end
 
 heightset(widget) = global currentHeight = Gtk.GAccessor.value(widget)
 
-function cancel_resize(widget)
+function cancel_resize(w)
     hide(winEditResize)
     redrawImage(processedImage)
 end
@@ -155,11 +174,17 @@ function crop_image(w)
     show(winEditCrop)
 end
 
-function preview_crop(widget)
-    redrawImage(CVProcessing.resize_image(processedImage, currentWidth, currentHeight))
+function preview_crop(w)
+    disable(w)
+    @sync redrawImage(CVProcessing.resize_image(
+        processedImage,
+        currentWidth,
+        currentHeight,
+    ))
+    enable(w)
 end
 
-function apply_crop(widget)
+function apply_crop(w)
     hide(winEditCrop)
     global processedImage =
         CVProcessing.resize_image(processedImage, currentWidth, currentHeight)
@@ -179,12 +204,18 @@ function scale_image(w)
     show(winEditScale)
 end
 
-preview_scale(widget) = redrawImage(CVProcessing.scale_image(
-    processedImage,
-    currentWidth,
-    currentHeight,
-    currentScale == 0 ? 0 : currentScale / 100,
-))
+function preview_scale(w)
+    disable(w)
+
+    @sync redrawImage(CVProcessing.scale_image(
+        processedImage,
+        currentWidth,
+        currentHeight,
+        currentScale == 0 ? 0 : currentScale / 100,
+    ))
+    
+    enable(w)
+end
 
 function apply_scale(widget)
     hide(winEditScale)
