@@ -1,14 +1,12 @@
 module CVProcessing
 
-export open_file, save_file, testimage, defaultimage, resize_image, scale_image, crop_image
+export open_file, save_file, defaultimage, resize_image, scale_image, crop_image
 
-using Images, ImageView, TestImages, ImageTransformations, FileIO
+using Images, ImageView, ImageTransformations, FileIO, ImageIO, ImageMagick
 
 open_file(path) = FileIO.load(path)
 
-save_file(path, processedImage) = FileIO.save(path, processedImage)
-
-testimage(name) = TestImages.testimage(name)
+save_file(path, img) = FileIO.save(path, img)
 
 defaultimage() = FileIO.load(joinpath(@__DIR__, "../resource/img", "lighthouse.png"))
 

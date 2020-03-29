@@ -74,7 +74,7 @@ function initUI()
 
     global originalImage = CVProcessing.defaultimage()
     global processedImage = copy(originalImage)
-    redrawImage(originalImage)
+    @sync redrawImage(originalImage)
 
     showall.([winDraw, winToolbar])
 
@@ -150,7 +150,7 @@ function redrawImage(img)
 end
 
 function open_file(w)
-    @sync path = open_dialog("Open image file", GtkNullContainer(), image_filters)
+    path = open_dialog("Open image file", GtkNullContainer(), image_filters)
     global originalImage = CVProcessing.open_file(path)
     global processedImage = copy(originalImage)
     @sync redrawImage(originalImage)
@@ -158,7 +158,7 @@ end
 
 function save_file(w)
     path = save_dialog("Save image file", GtkNullContainer(), image_filters)
-    @sync CVProcessing.save_file(path, processedImage)
+    CVProcessing.save_file(path, processedImage)
 end
 
 function resize_image(w)
@@ -182,16 +182,16 @@ end
 
 function apply_resize(widget)
     hide(winEditResize)
-    @sync global processedImage =
+    global processedImage =
         CVProcessing.resize_image(processedImage, currentWidth, currentHeight)
-    redrawImage(processedImage)
+    @sync redrawImage(processedImage)
 end
 
 heightset(widget) = global currentHeight = Gtk.GAccessor.value(widget)
 
 function cancel_resize(w)
     hide(winEditResize)
-    redrawImage(processedImage)
+    @sync redrawImage(processedImage)
 end
 
 function crop_image(w)
@@ -227,7 +227,7 @@ end
 
 function apply_crop(w)
     hide(winEditCrop)
-    @sync global processedImage = CVProcessing.crop_image(
+    global processedImage = CVProcessing.crop_image(
         processedImage,
         Gtk.GAccessor.value(topLeftXSlider),
         Gtk.GAccessor.value(topLeftYSlider),
@@ -265,7 +265,7 @@ end
 
 function apply_scale(widget)
     hide(winEditScale)
-    @sync global processedImage = CVProcessing.scale_image(
+    global processedImage = CVProcessing.scale_image(
         processedImage,
         currentWidth,
         currentHeight,

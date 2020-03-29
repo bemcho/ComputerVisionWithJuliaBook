@@ -10,5 +10,5 @@ function julia_main()::Cint
     return 0 # if things finished successfully
 end
 #comment when building native app
-julia_main()
+#julia_main()
 end
